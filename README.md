@@ -25,6 +25,7 @@ Copy this confluence API token and your Klaviyo email into a .env file in this r
 ```bash
 CONFLUENCE_API_TOKEN=<your API token>
 KLAVIYO_EMAIL=<your klaviyo email>
+BASE_DIR=<the absolute path to this repo>
 ```
 
 ### Eng Handbook Setup
@@ -55,6 +56,12 @@ python src/retrieval_stuff/build_eng_handbook_index.py \
   --dimension 384
 ```
 This will take longer than the confluence one. Larger chunk sizes (5,000 - 10,000) will reduce the indexing time and speed up retrieval if needed.
+
+## MCP Inspector
+To run the [MCP inspector tool](https://modelcontextprotocol.io/docs/tools/inspector) to debug any changes:
+```bash
+npx @modelcontextprotocol/inspector bash run_mcp.sh
+```
 
 ## Setting up the MCP server
 TBD

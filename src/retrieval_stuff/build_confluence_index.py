@@ -1,6 +1,6 @@
 import argparse
 from document_parser import ConfluenceDocumentParser
-from index import HuggingFaceVectorStoreIndex
+from src.retrieval_stuff.index import HuggingFaceVectorStoreIndex
 from confluence_scraper import ConfluenceScraper
 import tempfile
 import dotenv

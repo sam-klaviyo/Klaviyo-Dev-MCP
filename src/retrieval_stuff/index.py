@@ -92,6 +92,8 @@ class HuggingFaceVectorStoreIndex(Index):
         """
         print(f"Storing index {self.index_name}...")
         if self.index is not None:
+            if not os.path.exists(self.path):
+                os.makedirs(self.path)
             self.index.storage_context.persist(persist_dir=self.path)
             print(f"Index {self.index_name} stored.")
         else:

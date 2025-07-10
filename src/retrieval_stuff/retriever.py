@@ -1,4 +1,4 @@
-from index import HuggingFaceVectorStoreIndex, Index
+from src.retrieval_stuff.index import HuggingFaceVectorStoreIndex, Index
 from llama_index.core.schema import NodeWithScore
 from llama_index.core.retrievers import BaseRetriever
 

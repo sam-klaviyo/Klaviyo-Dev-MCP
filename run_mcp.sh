@@ -1,6 +1,14 @@
 #!/bin/bash
 source ~/.zshrc
-pyenv activate kvyo-mcp
+source /Users/sam.onuallain/Klaviyo-Dev-MCP/.env
+cd $BASE_DIR
+export PYTHONPATH=$BASE_DIR
 
-cd /Users/sam.onuallain/Klaviyo-Dev-MCP/kvyo-mcp
-uv run src/engineering_guidebook.py
+source .venv/bin/activate
+
+uv run src/mcp_server/main.py \
+    --confluence \
+    --confluence_path index/confluence_pages_index \
+    --guidebook \
+    --guidebook_path index/eng_handbook_index \
+    --top_k 5

@@ -1,6 +1,6 @@
 import argparse
 from document_parser import EngHandbookDocumentParser
-from index import HuggingFaceVectorStoreIndex
+from src.retrieval_stuff.index import HuggingFaceVectorStoreIndex
 
 
 def main():
