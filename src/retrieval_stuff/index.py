@@ -66,6 +66,7 @@ class HuggingFaceVectorStoreIndex(Index):
         self.storage_context = StorageContext.from_defaults(vector_store=vector_store)
         self.storage_context.llm = None
         self.storage_context.embed_model = embed_model
+        self.storage_context.chunk_size = chunk_size
     
     
     

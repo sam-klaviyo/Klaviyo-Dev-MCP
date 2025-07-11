@@ -6,11 +6,10 @@ from src.retrieval_stuff.index import HuggingFaceVectorStoreIndex
 def main():
     """
     Example usage:
-    python src/retrieval_stuff/build_eng_handbook_index.py --handbook_path /Users/sam.onuallain/Klaviyo/Repos/eng-handbook --sentence_num 10 --chunk_size 1024 --hf_name "avsolatorio/GIST-small-Embedding-v0" --dimension 384
+    python src/retrieval_stuff/build_eng_handbook_index.py --handbook_path /Users/sam.onuallain/Klaviyo/Repos/eng-handbook --chunk_size 1024 --hf_name "avsolatorio/GIST-small-Embedding-v0" --dimension 384
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("--handbook_path", type=str, required=True)
-    parser.add_argument("--sentence_num", type=int, required=True)
     parser.add_argument("--chunk_size", type=int, required=True)
     parser.add_argument("--hf_name", type=str, required=True)
     parser.add_argument("--dimension", type=int, required=True)
@@ -19,7 +18,6 @@ def main():
     
     parser = EngHandbookDocumentParser(
         dir_path=args.handbook_path,
-        sentence_num=args.sentence_num,
         chunk_size=args.chunk_size
     )
     documents = parser.get_documents()

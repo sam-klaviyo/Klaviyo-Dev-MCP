@@ -28,34 +28,57 @@ KLAVIYO_EMAIL=<your klaviyo email>
 BASE_DIR=<the absolute path to this repo>
 ```
 
+#### Useful Confluence spaces
+- KLAV - Klaviyo Wiki
+- EN - Engineering Wiki
+- ResDev - R&D Wiki
+
 ### Eng Handbook Setup
-Make sure you have the eng handbook in the correct place (Klaviyo/Repos/eng-handbook), and that it is up to date!
+Make sure you have the eng handbook cloned and up to date. The setup script defaults to `/Users/sam.onuallain/Klaviyo/Repos/eng-handbook`, but you can specify a custom path with `--handbook_path`.
 
-## Building the Indices (Indexes?)
+## Building the Indexes
 
-### Confluence
+Use the setup script to build your indexes. The script will automatically handle environment setup, create necessary directories, and build the specified indexes.
+
+### Basic Usage
+
 ```bash
-python src/retrieval_stuff/build_confluence_index.py.py \
-  --sentence_num 10 \
-  --chunk_size 1024 \
-  --hf_name "avsolatorio/GIST-small-Embedding-v0" \
-  --dimension 384 \
-  --confluence_spaces "ResDev" "EN" \
-  --env_path .env
+# Build confluence index for specific spaces
+python setup_index.py --confluence ResDev EN
+
+# Build handbook index
+python setup_index.py --handbook
+
+# Build both indexes
+python setup_index.py --confluence --handbook ResDev EN KLAV
 ```
 
-More info about these settings in retrieval_stuff/README.md. You can specify how documents are chunked, what embedding model to use for retrieval, and which confluence spaces to pull from (here it pulls the R&D and Engineering spaces).
+### Advanced Configuration
 
-### Eng Handbook
 ```bash
-python src/retrieval_stuff/build_eng_handbook_index.py \
-  --handbook_path <path to your eng handbook repo> \
-  --sentence_num 10 \
-  --chunk_size 1024 \
-  --hf_name "avsolatorio/GIST-small-Embedding-v0" \
-  --dimension 384
+# Use custom embedding model
+python setup_index.py --confluence --embed_model sentence-transformers/all-MiniLM-L6-v2 ResDev EN
+
+# Custom chunk size and dimension
+python setup_index.py --confluence --chunk_size 4096 --dimension 768 ResDev EN
+
+# Custom handbook path
+python setup_index.py --handbook --handbook_path /path/to/your/eng-handbook
 ```
-This will take longer than the confluence one. Larger chunk sizes (5,000 - 10,000) will reduce the indexing time and speed up retrieval if needed.
+
+### Available Options
+
+- `--confluence`: Enable building confluence index
+- `--handbook`: Enable building handbook index  
+- `--embed_model`: Embedding model to use (default: avsolatorio/GIST-small-Embedding-v0)
+- `--chunk_size`: Size of document chunks (default: 2048)
+- `--dimension`: Embedding dimension (default: 384)
+- `--handbook_path`: Path to engineering handbook (default: /Users/sam.onuallain/Klaviyo/Repos/eng-handbook)
+- `--env_path`: Path to .env file (default: .env)
+
+Run `python setup_index.py --help` for full documentation.
+
+**Note:** Larger chunk sizes (4000-8000) will reduce indexing time and speed up retrieval, but may reduce precision for specific queries.
 
 ## MCP Inspector
 To run the [MCP inspector tool](https://modelcontextprotocol.io/docs/tools/inspector) to debug any changes:
@@ -64,4 +87,14 @@ npx @modelcontextprotocol/inspector bash run_mcp.sh
 ```
 
 ## Setting up the MCP server
-TBD
+Put this in whatever MCP config you need to:
+```json
+"mcpServers": {
+      "klaviyo_dev_mcp": {
+        "command": "bash",
+        "args": [
+          "<path to run_mcp.sh>"
+        ]
+      }
+    }
+```

@@ -5,7 +5,7 @@ import json
 from tqdm import tqdm
 
 
-def chunk_document(doc: Document, char_limit: int, sentence_num: int) -> list[Document]:
+def chunk_document(doc: Document, char_limit: int) -> list[Document]:
     sentence_pattern = r'(?<=[.!?])\s+(?=[A-Z])'
     result_documents = []
 
@@ -18,7 +18,7 @@ def chunk_document(doc: Document, char_limit: int, sentence_num: int) -> list[Do
     # Clean up sentences (remove empty ones, strip whitespace)
     sentences = [s.strip() for s in sentences if s.strip()]
     
-    # Create chunks based on chunk_size
+    # Create chunks based on character limit only
     chunks = []
     current_chunk = []
     current_length = 0
@@ -26,7 +26,7 @@ def chunk_document(doc: Document, char_limit: int, sentence_num: int) -> list[Do
     for sentence in sentences:
         sentence_length = len(sentence)
         
-        # Check if adding this sentence would exceed max_chunk_length
+        # Check if adding this sentence would exceed char_limit
         if current_length + sentence_length > char_limit and current_chunk:
             # Finalize current chunk
             chunks.append(' '.join(current_chunk))
@@ -36,12 +36,6 @@ def chunk_document(doc: Document, char_limit: int, sentence_num: int) -> list[Do
             # Add sentence to current chunk
             current_chunk.append(sentence)
             current_length += sentence_length
-            
-            # Check if we've reached chunk_size
-            if len(current_chunk) >= sentence_num:
-                chunks.append(' '.join(current_chunk))
-                current_chunk = []
-                current_length = 0
     
     # Add any remaining sentences as the last chunk
     if current_chunk:
@@ -53,7 +47,7 @@ def chunk_document(doc: Document, char_limit: int, sentence_num: int) -> list[Do
         chunk_metadata = metadata.copy()
         chunk_metadata['chunk_index'] = i
         chunk_metadata['total_chunks'] = len(chunks)
-        chunk_metadata['chunk_size'] = sentence_num
+        chunk_metadata['char_limit'] = char_limit
         
         # Create new Document with chunked text and preserved metadata
         chunk_doc = Document(
@@ -61,7 +55,6 @@ def chunk_document(doc: Document, char_limit: int, sentence_num: int) -> list[Do
             metadata=chunk_metadata
         )
         result_documents.append(chunk_doc)
-
 
     return result_documents
 
@@ -106,9 +99,8 @@ class DocumentParser:
 
 
 class EngHandbookDocumentParser(DocumentParser):
-    def __init__(self, dir_path: str, sentence_num: int, chunk_size: int):
+    def __init__(self, dir_path: str, chunk_size: int):
         self.dir_path = dir_path
-        self.sentence_num = sentence_num
         self.chunk_size = chunk_size
     
     def read_documents(self) -> list[dict]:
@@ -131,24 +123,22 @@ class EngHandbookDocumentParser(DocumentParser):
     
     
     def chunk_document(self, document: Document) -> list[Document]:
-        return chunk_document(document, self.chunk_size, self.sentence_num)
+        return chunk_document(document, self.chunk_size)
         
 
 
 
 class ConfluenceDocumentParser(DocumentParser):
-    def __init__(self, dir_path: str, sentence_num: int = 8, chunk_size: int = 5_000):
+    def __init__(self, dir_path: str, chunk_size: int = 5_000):
         """
         Initialize the document parser.
 
         Args:
             dir_path: The path to the directory containing the documents.
-            sentence_num: The number of sentences to include in each chunk.
             chunk_size: The maximum number of characters to include in each chunk.
         """
         
         self.dir_path = dir_path
-        self.sentence_num = sentence_num
         self.chunk_size = chunk_size
 
 
@@ -218,19 +208,17 @@ class ConfluenceDocumentParser(DocumentParser):
 
         # Robust regex pattern for sentence splitting
         # Handles various sentence endings: ., !, ?, and accounts for abbreviations
-        return chunk_document(doc, self.chunk_size, self.sentence_num)
+        return chunk_document(doc, self.chunk_size)
         
     
 if __name__ == "__main__":
     # parser = ConfluenceDocumentParser(
     #     dir_path="confluence_pages",
-    #     sentence_num=10,
     #     chunk_size=10_000
     # )
 
     parser = EngHandbookDocumentParser(
         dir_path="/Users/sam.onuallain/Klaviyo/Repos/eng-handbook",
-        sentence_num=10,
         chunk_size=5_000
     )
 

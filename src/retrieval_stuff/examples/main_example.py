@@ -7,8 +7,7 @@ def confluence_example():
     
     # parser = ConfluenceDocumentParser(
     #     dir_path="confluence_pages",
-    #     sentence_num=5,
-    #     char_limit=chunk_size
+    #     chunk_size=chunk_size
     # )
     # documents = parser.get_documents()
     
@@ -31,7 +30,6 @@ def eng_handbook_example():
     chunk_size = 1024
     # parser = EngHandbookDocumentParser(
     #     dir_path="/Users/sam.onuallain/Klaviyo/Repos/eng-handbook",
-    #     sentence_num=10,
     #     chunk_size=chunk_size
     # )
     # documents = parser.get_documents()

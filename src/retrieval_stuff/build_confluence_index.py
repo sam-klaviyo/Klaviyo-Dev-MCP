@@ -8,10 +8,9 @@ import dotenv
 def main():
     """
     Example usage:
-    python build_confluence_index.py --sentence_num 10 --chunk_size 1024 --hf_name "avsolatorio/GIST-small-Embedding-v0" --dimension 384 --index_path ./confluence_pages_index --confluence_spaces "ResDev" "EN" --env_path .env
+    python build_confluence_index.py --chunk_size 1024 --hf_name "avsolatorio/GIST-small-Embedding-v0" --dimension 384 --index_path ./confluence_pages_index --confluence_spaces "ResDev" "EN" --env_path .env
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("--sentence_num", type=int, required=True, help="Number of sentences per chunk")
     parser.add_argument("--chunk_size", type=int, required=True, help="Size of the chunks")
     parser.add_argument("--hf_name", type=str, required=True, help="Name of the huggingface model to use")
     parser.add_argument("--dimension", type=int, required=True, help="Dimension of the huggingface model")
@@ -33,7 +32,6 @@ def main():
         # Parse documents
         parser = ConfluenceDocumentParser(
             dir_path=temp_dir,
-            sentence_num=args.sentence_num,
             chunk_size=args.chunk_size
         )
         documents = parser.get_documents()
